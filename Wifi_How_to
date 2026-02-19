@@ -48,7 +48,7 @@ Vert scan each host
 	.76 - port 9999
 	.197 - port 80, 443,554,49152
 
-Hacker boi shit
+Hacker boi shit - The effects
 	Note: navigate to github for TPLink_SmartPlug. Find the .py script. -> https://github.com/softScheck/tplink-smartplug. This needs to be on your local box.
 	./tplink_smartplug.py -t <ip> [-c <cmd> || -j <json>]
 	Provide the target IP using -t and a command to send using either -c or -j. Commands for the -c flag:
