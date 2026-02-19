@@ -1,6 +1,6 @@
 FTX - Effect Exercise
 Class: 25/006
-Note: Some commands require SUDO; Advisable to set up collection and command terminal windows
+Note: Some commands require SUDO; Advisable to set up collection and command terminal windows; ips or ip ranges will be different.
 
 Steps: 
 Confirm wlan int is up; make sure Alfa network is plugged in
