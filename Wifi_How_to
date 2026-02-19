@@ -66,9 +66,3 @@ Clean Up for Next User / Trainee
 	a. rm files and artifacts
 	b. clear history using: echo -n > ~/.zsh_history && exec zsh
 	c. Go into settings manager in Kali, for Advanced Network Configurations for network. Remove wifi network of target.
-
-	
-	
-	
-	
-	
