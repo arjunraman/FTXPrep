@@ -46,7 +46,7 @@ Vert scan each host
 	nmap -Pn -n -sT -sV 192.168.50.1 -oA tcpscan
 	.1 - port 53,80
 	.76 - port 9999
-	.197 - port 80, 443,554, 49152
+	.197 - port 80, 443,554,49152
 
 Hacker boi shit
 	Note: navigate to github for TPLink_SmartPlug. Find the .py script. -> https://github.com/softScheck/tplink-smartplug. This needs to be on your local box.
