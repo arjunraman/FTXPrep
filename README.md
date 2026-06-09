@@ -1,4 +1,4 @@
-# FTX WiFi HacktheBox
+# FTX WiFi Red Team
 
 Reference guides for a Field Training Exercise (FTX) covering wireless network exploitation and GPS-based geolocation of a target access point.
 
