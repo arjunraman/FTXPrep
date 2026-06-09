@@ -1,21 +1,108 @@
-MIT License
+Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International
+(CC BY-NC-ND 4.0)
 
-Copyright (c) 2026 arjunraman
+Copyright (c) 2026 builtbyraman
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+Full license text: https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+===============================================================================
+LICENSE TERMS
+===============================================================================
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+You are free to:
+
+  Share  — copy and redistribute the material in any medium or format
+
+Under the following terms:
+
+  Attribution       — You must give appropriate credit to the original author,
+                      provide a link to this license, and indicate the source.
+                      You may not suggest the licensor endorses you or your use.
+
+  NonCommercial     — You may not use the material for commercial purposes.
+                      This includes but is not limited to: incorporating this
+                      material into paid courses, training products, or services;
+                      selling or licensing access to this content; or using it
+                      in commercial security consulting engagements without
+                      explicit written permission from the copyright holder.
+
+  NoDerivatives     — If you remix, transform, or build upon the material, you
+                      may not distribute the modified material. You may adapt
+                      this material for personal or internal use only.
+
+  No additional     — You may not apply legal terms or technological measures
+  restrictions        that legally restrict others from doing anything the
+                      license permits.
+
+===============================================================================
+AUTHORIZED USE NOTICE
+===============================================================================
+
+By accessing, reading, downloading, or otherwise using any part of this
+repository, you acknowledge and agree to the following:
+
+1. SCOPE OF AUTHORIZED USE
+   This material is provided exclusively for use in:
+   - Authorized military or government Field Training Exercises (FTX)
+   - Controlled lab environments where all systems are owned or explicitly
+     authorized for testing by the operator
+   - Personal study and skill development in isolated, authorized environments
+
+2. PROHIBITION ON UNAUTHORIZED USE
+   Use of any technique, command, script, or method described in this
+   repository against any network, system, device, or infrastructure without
+   explicit written authorization from the lawful owner is strictly prohibited
+   and constitutes a criminal offense under, including but not limited to:
+
+   - United States:  Computer Fraud and Abuse Act (CFAA), 18 U.S.C. § 1030
+   - United Kingdom: Computer Misuse Act 1990
+   - European Union:  Directive 2013/40/EU on Attacks Against Information Systems
+   - Australia:      Criminal Code Act 1995, Part 10.7
+   - Canada:         Criminal Code, Section 342.1
+
+   This list is not exhaustive. Users are responsible for understanding and
+   complying with applicable law in their jurisdiction.
+
+3. NO WARRANTY
+   THIS MATERIAL IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+   IMPLIED, INCLUDING BUT NOT LIMITED TO WARRANTIES OF MERCHANTABILITY, FITNESS
+   FOR A PARTICULAR PURPOSE, ACCURACY, OR NON-INFRINGEMENT. THE AUTHOR MAKES
+   NO REPRESENTATION THAT THE INFORMATION CONTAINED HEREIN IS COMPLETE,
+   CURRENT, OR FREE FROM ERROR.
+
+4. LIMITATION OF LIABILITY
+   TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, THE AUTHOR SHALL NOT BE
+   LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+   CONSEQUENTIAL DAMAGES (INCLUDING BUT NOT LIMITED TO PROCUREMENT OF SUBSTITUTE
+   GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; LEGAL FEES; OR BUSINESS
+   INTERRUPTION) ARISING FROM THE USE OR MISUSE OF THIS MATERIAL, EVEN IF
+   ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
+
+5. PUBLICLY DOCUMENTED TECHNIQUES
+   All techniques, tools, and methods referenced in this repository are publicly
+   documented in open-source project documentation, academic research, and
+   vendor publications. This repository contains no novel exploits, classified
+   information, or techniques not already available in the public domain. The
+   author has not disclosed any information that was not already publicly
+   accessible at the time of publication.
+
+6. INDEMNIFICATION
+   By using this material, you agree to indemnify, defend, and hold harmless
+   the author from and against any and all claims, damages, losses, costs, and
+   expenses (including reasonable legal fees) arising from your use or misuse
+   of this material or your violation of any applicable law.
+
+7. GOVERNING LAW
+   These terms shall be governed by and construed in accordance with the laws
+   of the jurisdiction in which the author resides, without regard to conflict
+   of law principles.
+
+===============================================================================
+COMMERCIAL LICENSING
+===============================================================================
+
+For commercial licensing inquiries — including use in paid training programs,
+commercial security services, or any other commercial context — contact the
+copyright holder directly via the repository contact information on GitHub.
+
+===============================================================================
